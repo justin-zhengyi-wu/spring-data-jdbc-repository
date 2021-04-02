@@ -84,10 +84,10 @@ public abstract class JdbcRepositoryCompoundPkTest extends AbstractIntegrationTe
 		repository.save(new BoardingPass("FOO-100", 1, "Smith", "B01"));
 
 		//when
-		repository.delete(pk("FOO-100", 1));
+		repository.deleteById(pk("FOO-100", 1));
 
 		//then
-		assertThat(repository.exists(pk("FOO-100", 1))).isFalse();
+		assertThat(repository.existsById(pk("FOO-100", 1))).isFalse();
 	}
 
 	@Test
@@ -112,7 +112,7 @@ public abstract class JdbcRepositoryCompoundPkTest extends AbstractIntegrationTe
 
 		//when
 		final List<BoardingPass> all = repository.findAll(
-				new Sort(
+				Sort.by(
 						new Order(ASC, "flight_no"),
 						new Order(DESC, "seq_no")
 				)
@@ -137,8 +137,8 @@ public abstract class JdbcRepositoryCompoundPkTest extends AbstractIntegrationTe
 
 		//when
 		final Page<BoardingPass> page = repository.findAll(
-				new PageRequest(0, 3,
-						new Sort(
+				PageRequest.of(0, 3,
+						Sort.by(
 								new Order(ASC, "flight_no"),
 								new Order(DESC, "seq_no")
 						)
@@ -164,8 +164,8 @@ public abstract class JdbcRepositoryCompoundPkTest extends AbstractIntegrationTe
 
 		//when
 		final Page<BoardingPass> page = repository.findAll(
-				new PageRequest(1, 3,
-						new Sort(
+				PageRequest.of(1, 3,
+						Sort.by(
 								new Order(ASC, "flight_no"),
 								new Order(DESC, "seq_no")
 						)

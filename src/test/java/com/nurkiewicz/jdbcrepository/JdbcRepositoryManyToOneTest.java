@@ -77,7 +77,7 @@ public abstract class JdbcRepositoryManyToOneTest extends AbstractIntegrationTes
 		final CommentWithUser third = repository.save(new CommentWithUser(someUser, "Third comment", SOME_TIMESTAMP, 1));
 
 		//when
-		final List<CommentWithUser> all = repository.findAll(new Sort("favourite_count"));
+		final List<CommentWithUser> all = repository.findAll(Sort.by("favourite_count"));
 
 		//then
 		assertThat(all).containsExactly(third, second, first);
@@ -95,7 +95,7 @@ public abstract class JdbcRepositoryManyToOneTest extends AbstractIntegrationTes
 		final CommentWithUser third = repository.save(new CommentWithUser(thirdUser, "Third comment", SOME_TIMESTAMP, 1));
 
 		//when
-		final List<CommentWithUser> all = repository.findAll(new Sort(DESC, "favourite_count"));
+		final List<CommentWithUser> all = repository.findAll(Sort.by(DESC, "favourite_count"));
 
 		//then
 		assertThat(all).containsExactly(first, second, third);
@@ -109,7 +109,7 @@ public abstract class JdbcRepositoryManyToOneTest extends AbstractIntegrationTes
 		repository.save(new CommentWithUser(someUser, "Third comment", SOME_TIMESTAMP, 1));
 
 		//when
-		final Page<CommentWithUser> page = repository.findAll(new PageRequest(0, 2, ASC, "contents"));
+		final Page<CommentWithUser> page = repository.findAll(PageRequest.of(0, 2, ASC, "contents"));
 
 		//then
 		assertThat(page.getTotalElements()).isEqualTo(3);
@@ -125,7 +125,7 @@ public abstract class JdbcRepositoryManyToOneTest extends AbstractIntegrationTes
 		final CommentWithUser third = repository.save(new CommentWithUser(someUser, "Third comment", SOME_TIMESTAMP, 1));
 
 		//when
-		final Page<CommentWithUser> page = repository.findAll(new PageRequest(1, 2, ASC, "contents"));
+		final Page<CommentWithUser> page = repository.findAll(PageRequest.of(1, 2, ASC, "contents"));
 
 		//then
 		assertThat(page.getTotalElements()).isEqualTo(3);
@@ -143,7 +143,7 @@ public abstract class JdbcRepositoryManyToOneTest extends AbstractIntegrationTes
 
 		//then
 		assertThat(repository.count()).isZero();
-		assertThat(userRepository.exists(SOME_USER)).isTrue();
+		assertThat(userRepository.existsById(SOME_USER)).isTrue();
 	}
 
 	@Test
@@ -174,7 +174,7 @@ public abstract class JdbcRepositoryManyToOneTest extends AbstractIntegrationTes
 
 		//then
 		assertThat(repository.count()).isZero();
-		assertThat(userRepository.exists(SOME_USER)).isTrue();
+		assertThat(userRepository.existsById(SOME_USER)).isTrue();
 	}
 
 }

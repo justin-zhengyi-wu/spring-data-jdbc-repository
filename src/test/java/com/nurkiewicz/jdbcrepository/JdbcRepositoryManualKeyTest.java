@@ -85,7 +85,7 @@ public abstract class JdbcRepositoryManualKeyTest extends AbstractIntegrationTes
 		//given
 
 		//when
-		Page<User> firstPage = repository.findAll(new PageRequest(0, 20));
+		Page<User> firstPage = repository.findAll(PageRequest.of(0, 20));
 
 		//then
 		assertThat(firstPage).isEmpty();
@@ -172,7 +172,7 @@ public abstract class JdbcRepositoryManualKeyTest extends AbstractIntegrationTes
 		jdbc.update("INSERT INTO USERS VALUES (?, ?, ?, ?)", "john4", SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
 
 		//when
-		Page<User> page = repository.findAll(new PageRequest(0, 5));
+		Page<User> page = repository.findAll(PageRequest.of(0, 5));
 
 		//then
 		assertThat(page).hasSize(1);
@@ -188,7 +188,7 @@ public abstract class JdbcRepositoryManualKeyTest extends AbstractIntegrationTes
 		jdbc.update("INSERT INTO USERS VALUES (?, ?, ?, ?)", "john5", SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
 
 		//when
-		Page<User> page = repository.findAll(new PageRequest(1, 5));
+		Page<User> page = repository.findAll(PageRequest.of(1, 5));
 
 		//then
 		assertThat(page).hasSize(0);
@@ -203,7 +203,7 @@ public abstract class JdbcRepositoryManualKeyTest extends AbstractIntegrationTes
 		jdbc.update("INSERT INTO USERS VALUES (?, ?, ?, ?)", "john6", SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
 
 		//when
-		Page<User> page = repository.findAll(new PageRequest(0, 5, ASC, "user_name"));
+		Page<User> page = repository.findAll(PageRequest.of(0, 5, ASC, "user_name"));
 
 		//then
 		assertThat(page).hasSize(1);
@@ -219,7 +219,7 @@ public abstract class JdbcRepositoryManualKeyTest extends AbstractIntegrationTes
 		jdbc.update("INSERT INTO USERS VALUES (?, ?, ?, ?)", "john6", SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
 
 		//when
-		Page<User> page = repository.findAll(new PageRequest(0, 5, new Sort(new Order(DESC, "reputation"), new Order(ASC, "user_name"))));
+		Page<User> page = repository.findAll(PageRequest.of(0, 5, Sort.by(new Order(DESC, "reputation"), new Order(ASC, "user_name"))));
 
 		//then
 		assertThat(page).hasSize(1);
@@ -239,7 +239,7 @@ public abstract class JdbcRepositoryManualKeyTest extends AbstractIntegrationTes
 		jdbc.update("INSERT INTO USERS VALUES (?, ?, ?, ?)", "john15", SOME_DATE_OF_BIRTH, SOME_REPUTATION + 1, true);
 
 		//when
-		Page<User> page = repository.findAll(new PageRequest(0, 3, new Sort(new Order(DESC, "reputation"), new Order(ASC, "user_name"))));
+		Page<User> page = repository.findAll(PageRequest.of(0, 3, Sort.by(new Order(DESC, "reputation"), new Order(ASC, "user_name"))));
 
 		//then
 		assertThat(page).hasSize(3);
@@ -263,7 +263,7 @@ public abstract class JdbcRepositoryManualKeyTest extends AbstractIntegrationTes
 		jdbc.update("INSERT INTO USERS VALUES (?, ?, ?, ?)", "john15", SOME_DATE_OF_BIRTH, SOME_REPUTATION + 1, true);
 
 		//when
-		Page<User> page = repository.findAll(new PageRequest(1, 3, new Sort(new Order(DESC, "reputation"), new Order(ASC, "user_name"))));
+		Page<User> page = repository.findAll(PageRequest.of(1, 3, Sort.by(new Order(DESC, "reputation"), new Order(ASC, "user_name"))));
 
 		//then
 		assertThat(page).hasSize(2);
@@ -279,7 +279,7 @@ public abstract class JdbcRepositoryManualKeyTest extends AbstractIntegrationTes
 	@Test
 	public void shouldReturnEmptyListWhenFindAllCalledWithoutPaging() throws Exception {
 		//given
-		final Sort sort = new Sort("reputation");
+		final Sort sort = Sort.by("reputation");
 
 		//when
 		final Iterable<User> reputation = repository.findAll(sort);
@@ -291,7 +291,7 @@ public abstract class JdbcRepositoryManualKeyTest extends AbstractIntegrationTes
 	@Test
 	public void shouldReturnEmptyListWhenFindAllCalledWithoutPagingButWithSortingOnMultipleProperties() throws Exception {
 		//given
-		final Sort sort = new Sort(new Order(DESC, "reputation"), new Order(ASC, "date_of_birth"));
+		final Sort sort = Sort.by(new Order(DESC, "reputation"), new Order(ASC, "date_of_birth"));
 
 		//when
 		final Iterable<User> reputation = repository.findAll(sort);
@@ -304,7 +304,7 @@ public abstract class JdbcRepositoryManualKeyTest extends AbstractIntegrationTes
 	public void shouldReturnSingleRecordWhenFindAllWithoutPagingButWithSorting() throws Exception {
 		//given
 		jdbc.update("INSERT INTO USERS VALUES (?, ?, ?, ?)", "john7", SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
-		final Sort sort = new Sort(new Order(DESC, "reputation"), new Order(ASC, "date_of_birth"));
+		final Sort sort = Sort.by(new Order(DESC, "reputation"), new Order(ASC, "date_of_birth"));
 
 		//when
 		final Iterable<User> all = repository.findAll(sort);
@@ -321,7 +321,7 @@ public abstract class JdbcRepositoryManualKeyTest extends AbstractIntegrationTes
 		jdbc.update("INSERT INTO USERS VALUES (?, ?, ?, ?)", "john5", SOME_DATE_OF_BIRTH, SOME_REPUTATION + 1, true);
 		jdbc.update("INSERT INTO USERS VALUES (?, ?, ?, ?)", "john4", SOME_DATE_OF_BIRTH, SOME_REPUTATION + 1, true);
 		jdbc.update("INSERT INTO USERS VALUES (?, ?, ?, ?)", "john6", SOME_DATE_OF_BIRTH, SOME_REPUTATION - 1, true);
-		final Sort sort = new Sort(new Order(DESC, "reputation"), new Order(ASC, "user_name"));
+		final Sort sort = Sort.by(new Order(DESC, "reputation"), new Order(ASC, "user_name"));
 
 		//when
 		final List<User> all = repository.findAll(sort);
@@ -340,7 +340,7 @@ public abstract class JdbcRepositoryManualKeyTest extends AbstractIntegrationTes
 		//given
 
 		//when
-		boolean exists = repository.exists("john");
+		boolean exists = repository.existsById("john");
 
 		//then
 		assertThat(exists).isFalse();
@@ -352,7 +352,7 @@ public abstract class JdbcRepositoryManualKeyTest extends AbstractIntegrationTes
 		jdbc.update("INSERT INTO USERS VALUES (?, ?, ?, ?)", "john7", SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
 
 		//when
-		boolean exists = repository.exists("john6");
+		boolean exists = repository.existsById("john6");
 
 		//then
 		assertThat(exists).isFalse();
@@ -364,7 +364,7 @@ public abstract class JdbcRepositoryManualKeyTest extends AbstractIntegrationTes
 		jdbc.update("INSERT INTO USERS VALUES (?, ?, ?, ?)", "john8", SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
 
 		//when
-		boolean exists = repository.exists("john8");
+		boolean exists = repository.existsById("john8");
 
 		//then
 		assertThat(exists).isTrue();
@@ -377,7 +377,7 @@ public abstract class JdbcRepositoryManualKeyTest extends AbstractIntegrationTes
 		jdbc.update("INSERT INTO USERS VALUES (?, ?, ?, ?)", someId, SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
 
 		//when
-		repository.delete(someId);
+		repository.deleteById(someId);
 
 		//then
 		assertThat(jdbc.queryForObject("SELECT COUNT(user_name) FROM USERS WHERE user_name = ?",				Integer.class, someId)).isZero();
@@ -389,7 +389,7 @@ public abstract class JdbcRepositoryManualKeyTest extends AbstractIntegrationTes
 		final String someId = "john10";
 
 		//when
-		repository.delete(someId);
+		repository.deleteById(someId);
 
 		//then
 		//no exception
@@ -402,7 +402,7 @@ public abstract class JdbcRepositoryManualKeyTest extends AbstractIntegrationTes
 		jdbc.update("INSERT INTO USERS VALUES (?, ?, ?, ?)", someId, SOME_DATE_OF_BIRTH, SOME_REPUTATION, true);
 
 		//when
-		repository.delete(someId + "_");
+		repository.deleteById(someId + "_");
 
 		//then
 		assertThat(jdbc.queryForList("SELECT user_name FROM USERS WHERE user_name = ?", String.class, someId)).containsExactly(someId);
@@ -465,7 +465,7 @@ public abstract class JdbcRepositoryManualKeyTest extends AbstractIntegrationTes
 		User alice = user("alice");
 
 		//when
-		repository.save(Arrays.asList(john, alice));
+		repository.saveAll(Arrays.asList(john, alice));
 
 		//then
 		assertThat(jdbc.queryForList("SELECT user_name FROM USERS ORDER BY user_name", String.class)).containsExactly("alice", "john");
@@ -476,10 +476,10 @@ public abstract class JdbcRepositoryManualKeyTest extends AbstractIntegrationTes
 		//given
 		User john = user("john");
 		User alice = user("alice");
-		repository.save(Arrays.asList(john, alice));
+		repository.saveAll(Arrays.asList(john, alice));
 
 		//when
-		repository.delete(Arrays.asList(john, alice));
+		repository.deleteAll(Arrays.asList(john, alice));
 
 		//then
 		assertThat(jdbc.queryForObject("SELECT COUNT(user_name) FROM USERS", Integer.class)).isZero();
@@ -491,10 +491,10 @@ public abstract class JdbcRepositoryManualKeyTest extends AbstractIntegrationTes
 		User john = user("john");
 		User alice = user("alice");
 		final User bobby = user("bobby");
-		repository.save(Arrays.asList(john, alice, bobby));
+		repository.saveAll(Arrays.asList(john, alice, bobby));
 
 		//when
-		repository.delete(Arrays.asList(john, alice));
+		repository.deleteAll(Arrays.asList(john, alice));
 
 		//then
 		assertThat(jdbc.queryForList("SELECT user_name FROM USERS", String.class)).containsExactly("bobby");
@@ -506,10 +506,10 @@ public abstract class JdbcRepositoryManualKeyTest extends AbstractIntegrationTes
 		User john = user("john");
 		User alice = user("alice");
 		final User bobby = user("bobby");
-		repository.save(Arrays.asList(john, alice, bobby));
+		repository.saveAll(Arrays.asList(john, alice, bobby));
 
 		//when
-		repository.delete(Arrays.asList(john, alice, user("bogus")));
+		repository.deleteAll(Arrays.asList(john, alice, user("bogus")));
 
 		//then
 		assertThat(jdbc.queryForList("SELECT user_name FROM USERS", String.class)).containsExactly("bobby");

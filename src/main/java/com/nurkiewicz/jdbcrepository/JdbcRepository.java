@@ -20,7 +20,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.util.Assert;
 
 import javax.sql.DataSource;
-import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -30,11 +29,12 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Implementation of {@link PagingAndSortingRepository} using {@link JdbcTemplate}
  */
-public abstract class JdbcRepository<T extends Persistable<ID>, ID extends Serializable> implements PagingAndSortingRepository<T, ID>, InitializingBean, BeanFactoryAware {
+public class JdbcRepository<T extends Persistable<ID>, ID> implements PagingAndSortingRepository<T, ID>, InitializingBean, BeanFactoryAware {
 
 	public static Object[] pk(Object... idValues) {
 		return idValues;
@@ -136,7 +136,7 @@ public abstract class JdbcRepository<T extends Persistable<ID>, ID extends Seria
 	}
 
 	@Override
-	public void delete(ID id) {
+	public void deleteById(ID id) {
 		jdbcOperations.update(sqlGenerator.deleteById(table), idToObjectArray(id));
 	}
 
@@ -146,7 +146,7 @@ public abstract class JdbcRepository<T extends Persistable<ID>, ID extends Seria
 	}
 
 	@Override
-	public void delete(Iterable<? extends T> entities) {
+	public void deleteAll(Iterable<? extends T> entities) {
 		for (T t : entities) {
 			delete(t);
 		}
@@ -158,7 +158,7 @@ public abstract class JdbcRepository<T extends Persistable<ID>, ID extends Seria
 	}
 
 	@Override
-	public boolean exists(ID id) {
+	public boolean existsById(ID id) {
 		return jdbcOperations.queryForObject(sqlGenerator.countById(table), Integer.class, idToObjectArray(id)) > 0;
 	}
 
@@ -168,6 +168,10 @@ public abstract class JdbcRepository<T extends Persistable<ID>, ID extends Seria
 	}
 
 	@Override
+	public Iterable<T> findAllById(Iterable<ID> iterable) {
+		return null;
+	}
+
 	public T findOne(ID id) {
 		final Object[] idColumns = idToObjectArray(id);
 		final List<T> entityOrEmpty = jdbcOperations.query(sqlGenerator.selectById(table), idColumns, rowMapper);
@@ -195,6 +199,11 @@ public abstract class JdbcRepository<T extends Persistable<ID>, ID extends Seria
 		} else {
 			return update(entity);
 		}
+	}
+
+	@Override
+	public Optional<T> findById(ID id) {
+		return Optional.empty();
 	}
 
 	protected <S extends T> S update(S entity) {
@@ -284,7 +293,7 @@ public abstract class JdbcRepository<T extends Persistable<ID>, ID extends Seria
 	}
 
 	@Override
-	public <S extends T> Iterable<S> save(Iterable<S> entities) {
+	public <S extends T> Iterable<S> saveAll(Iterable<S> entities) {
 		List<S> ret = new ArrayList<S>();
 		for (S s : entities) {
 			ret.add(save(s));
@@ -292,7 +301,6 @@ public abstract class JdbcRepository<T extends Persistable<ID>, ID extends Seria
 		return ret;
 	}
 
-	@Override
 	public Iterable<T> findAll(Iterable<ID> ids) {
 		final List<ID> idsList = toList(ids);
 		if (idsList.isEmpty()) {
