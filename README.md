@@ -1,3 +1,8 @@
+<h1>IMPORTANT</h1>  
+Moved to https://github.com/zhengchubo/spring-data-jdbc-repository
+
+---
+
 [![Build Status](https://secure.travis-ci.org/nurkiewicz/spring-data-jdbc-repository.png?branch=master)](https://travis-ci.org/nurkiewicz/spring-data-jdbc-repository) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.nurkiewicz.jdbcrepository/jdbcrepository/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.nurkiewicz.jdbcrepository/jdbcrepository)
 
 # Spring Data JDBC generic DAO implementation
